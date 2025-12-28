@@ -1,14 +1,14 @@
 SELECT sample_id, dna_sequence, species,
 
     CASE
-      WHEN SUBSTR(dna_sequence, 0, 4) = 'ATG' THEN 1 ELSE 0
+      WHEN dna_sequence LIKE 'ATG%' THEN 1 ELSE 0
     END as has_start,
 
     CASE
-      WHEN SUBSTR(dna_sequence, LENGTH(dna_sequence) - 2, LENGTH(dna_sequence))
-        IN ('TAA', 'TAG', 'TGA')
-      THEN 1
-      ELSE 0
+      WHEN (dna_sequence LIKE '%TAA')
+        OR (dna_sequence LIKE '%TAG') 
+        OR (dna_sequence LIKE '%TGA')
+      THEN 1 ELSE 0
     END as has_stop,
 
     CASE
