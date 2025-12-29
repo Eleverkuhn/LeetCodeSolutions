@@ -1,0 +1,22 @@
+SELECT
+  pairs.product1_id,
+  pairs.product2_id,
+  pi1.category AS product1_category,
+  pi2.category AS product2_category,
+  pairs.customer_count
+FROM (
+  SELECT
+    p1.product_id AS product1_id,
+    p2.product_id AS product2_id,
+    COUNT(DISTINCT(p1.user_id)) AS customer_count
+  FROM productpurchases p1
+  JOIN productpurchases p2
+    ON p1.user_id = p2.user_id AND p1.product_id < p2.product_id
+  GROUP BY p1.product_id, p2.product_id
+  HAVING COUNT(DISTINCT(p1.user_id)) >= 3
+) AS pairs
+JOIN productinfo pi1
+  ON pairs.product1_id = pi1.product_id
+JOIN productinfo pi2
+  ON pairs.product2_id = pi2.product_id
+ORDER BY pairs.customer_count DESC, pairs.product1_id, pairs.product2_id
